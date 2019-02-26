@@ -1,0 +1,227 @@
+{
+    "tasks": [
+        {
+            "environment": {},
+            "displayName": "Bash - Create output folder",
+            "alwaysRun": false,
+            "continueOnError": false,
+            "condition": "succeeded()",
+            "enabled": true,
+            "timeoutInMinutes": 0,
+            "inputs": {
+                "targetType": "inline",
+                "filePath": "",
+                "arguments": "",
+                "script": "# we need to create the results folder from the agent\n# otherwise docker deamon will create it with its account\n# and this will prevent any cleanup \n\nmkdir $BUILD_SOURCESDIRECTORY/integrationtestresults\n\n# use stat -c '%U' dir to check ownership\nstat -c '%U' $BUILD_SOURCESDIRECTORY/integrationtestresults/\n",
+                "workingDirectory": "",
+                "failOnStderr": "false"
+            },
+            "task": {
+                "id": "6c731c3c-3c68-459a-a5c9-bde6e6595b5b",
+                "versionSpec": "3.*",
+                "definitionType": "task"
+            }
+        },
+        {
+            "environment": {},
+            "displayName": "Docker-Compose: Integration test",
+            "alwaysRun": false,
+            "continueOnError": false,
+            "condition": "succeeded()",
+            "enabled": true,
+            "timeoutInMinutes": 0,
+            "inputs": {
+                "containerregistrytype": "Azure Container Registry",
+                "dockerRegistryEndpoint": "",
+                "azureSubscriptionEndpoint": "",
+                "azureContainerRegistry": "$(docker.registry)",
+                "dockerComposeFile": "$(integrationTestDockerComposeFile)",
+                "additionalDockerComposeFiles": "$(additionalDockerComposeFiles)",
+                "dockerComposeFileArgs": "HOST_RESULTS_FOLDER=$(Build.SourcesDirectory)/integrationtestresults\nDOCKER_REGISTRY=$(docker.registry)/\n",
+                "projectName": "$(Build.Repository.Name)",
+                "qualifyImageNames": "true",
+                "action": "Run a Docker Compose command",
+                "additionalImageTags": "",
+                "includeSourceTags": "false",
+                "includeLatestTag": "false",
+                "buildImages": "true",
+                "serviceName": "",
+                "containerName": "",
+                "ports": "",
+                "workDir": "",
+                "entrypoint": "",
+                "containerCommand": "",
+                "detached": "true",
+                "abortOnContainerExit": "true",
+                "imageDigestComposeFile": "$(Build.StagingDirectory)/docker-compose.images.yml",
+                "removeBuildOptions": "false",
+                "baseResolveDirectory": "",
+                "outputDockerComposeFile": "$(Build.StagingDirectory)/docker-compose.yml",
+                "dockerComposeCommand": "up --build --abort-on-container-exit ",
+                "dockerHostEndpoint": "",
+                "nopIfNoDockerComposeFile": "false",
+                "requireAdditionalDockerComposeFiles": "false",
+                "cwd": "$(System.DefaultWorkingDirectory)"
+            },
+            "task": {
+                "id": "6975e2d1-96d3-4afc-8a41-498b5d34ea19",
+                "versionSpec": "0.*",
+                "definitionType": "task"
+            }
+        },
+        {
+            "environment": {},
+            "displayName": "Docker-Compose: down",
+            "alwaysRun": false,
+            "continueOnError": false,
+            "condition": "always()",
+            "enabled": true,
+            "timeoutInMinutes": 0,
+            "inputs": {
+                "containerregistrytype": "Azure Container Registry",
+                "dockerRegistryEndpoint": "",
+                "azureSubscriptionEndpoint": "",
+                "azureContainerRegistry": "$(docker.registry)",
+                "dockerComposeFile": "$(integrationTestDockerComposeFile)",
+                "additionalDockerComposeFiles": "",
+                "dockerComposeFileArgs": "",
+                "projectName": "$(Build.Repository.Name)",
+                "qualifyImageNames": "true",
+                "action": "Run a Docker Compose command",
+                "additionalImageTags": "",
+                "includeSourceTags": "false",
+                "includeLatestTag": "false",
+                "buildImages": "true",
+                "serviceName": "",
+                "containerName": "",
+                "ports": "",
+                "workDir": "",
+                "entrypoint": "",
+                "containerCommand": "",
+                "detached": "true",
+                "abortOnContainerExit": "true",
+                "imageDigestComposeFile": "$(Build.StagingDirectory)/docker-compose.images.yml",
+                "removeBuildOptions": "false",
+                "baseResolveDirectory": "",
+                "outputDockerComposeFile": "$(Build.StagingDirectory)/docker-compose.yml",
+                "dockerComposeCommand": "down -v",
+                "dockerHostEndpoint": "",
+                "nopIfNoDockerComposeFile": "false",
+                "requireAdditionalDockerComposeFiles": "false",
+                "cwd": "$(System.DefaultWorkingDirectory)"
+            },
+            "task": {
+                "id": "6975e2d1-96d3-4afc-8a41-498b5d34ea19",
+                "versionSpec": "0.*",
+                "definitionType": "task"
+            }
+        },
+        {
+            "environment": {},
+            "displayName": "Publish Test Results **/integrationtestresults/*.trx",
+            "alwaysRun": false,
+            "continueOnError": false,
+            "condition": "succeededOrFailed()",
+            "enabled": true,
+            "timeoutInMinutes": 0,
+            "inputs": {
+                "testRunner": "VSTest",
+                "testResultsFiles": "**/integrationtestresults/*.trx",
+                "searchFolder": "$(System.DefaultWorkingDirectory)",
+                "mergeTestResults": "false",
+                "failTaskOnFailedTests": "false",
+                "testRunTitle": "",
+                "platform": "",
+                "configuration": "",
+                "publishRunAttachments": "true"
+            },
+            "task": {
+                "id": "0b0f01ed-7dde-43ff-9cbb-e48954daf9b1",
+                "versionSpec": "2.*",
+                "definitionType": "task"
+            }
+        }
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "revision": 10,
+    "createdBy": {
+        "displayName": "Marco De Sanctis",
+        "id": "20e3e1f8-da74-4df2-b217-1e703a8943cf",
+        "uniqueName": ""
+    },
+    "createdOn": "2019-02-10T18:55:00.617Z",
+    "modifiedBy": {
+        "displayName": "Marco De Sanctis",
+        "id": "20e3e1f8-da74-4df2-b217-1e703a8943cf",
+        "uniqueName": ""
+    },
+    "modifiedOn": "2019-02-17T17:37:30.803Z",
+    "comment": "",
+    "id": "ce557b14-adf1-4921-aec6-76ac1f380e61",
+    "name": "Des - Docker Compose Integration Tests",
+    "version": {
+        "major": 1,
+        "minor": 0,
+        "patch": 0,
+        "isTest": false
+    },
+    "iconUrl": "https://cdn.vsassets.io/v/M146_20190206.11/_content/icon-meta-task.png",
+    "friendlyName": "Des - Docker Compose Integration Tests",
+    "description": "Task group that runs integration tests through a DockerCompose file",
+    "category": "Test",
+    "definitionType": "metaTask",
+    "author": "Marco De Sanctis",
+    "demands": [],
+    "groups": [],
+    "inputs": [
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {
+                "resizable": "true",
+                "rows": "2"
+            },
+            "name": "additionalDockerComposeFiles",
+            "label": "additionalDockerComposeFiles",
+            "defaultValue": "",
+            "required": true,
+            "type": "multiLine",
+            "helpMarkDown": "Additional Docker Compose files to be combined with the primary Docker Compose file. Relative paths are resolved relative to the directory containing the primary Docker Compose file. If a specified file is not found, it is ignored. Specify each file path on a new line.",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "docker.registry",
+            "label": "docker.registry",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "integrationTestDockerComposeFile",
+            "label": "integrationTestDockerComposeFile",
+            "defaultValue": "",
+            "required": true,
+            "type": "filePath",
+            "helpMarkDown": "Path to the primary Docker Compose file to use.",
+            "groupName": ""
+        }
+    ],
+    "satisfies": [],
+    "sourceDefinitions": [],
+    "dataSourceBindings": [],
+    "instanceNameFormat": "Task group: Des - Docker Compose Integration Tests $(additionalDockerComposeFiles)",
+    "preJobExecution": {},
+    "execution": {},
+    "postJobExecution": {}
+}

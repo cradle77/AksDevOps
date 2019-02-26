@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  composedemodb:
+    image: mongo
+
+  mongoseed:
+    image: mongoseed
+    build:
+      context: .
+      dockerfile: UITest.MongoSeed/Dockerfile
+    depends_on:
+    - composedemodb
+
+  composedemoredis:
+    image: redis
+     
+  backend:
+    image: ${DOCKER_REGISTRY-}backend:${BACKEND_VERSION-latest}
+    depends_on:
+    - mongoseed
+
+  frontend:
+    image: ${DOCKER_REGISTRY-}frontend:${FRONTEND_VERSION-latest}
+    depends_on:
+    - composedemoredis
+    - backend
+
+  selenium-chrome:
+    image: selenium/standalone-chrome
+  
+  uitest:
+    image: frontenduitest
+    build:
+      context: .
+      dockerfile: Frontend.UiTests/Dockerfile
+    depends_on:
+    - selenium-chrome
+    - frontend

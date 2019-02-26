@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  
+  uitest:
+    command: -l trx -r /results
+    volumes:
+    - ${HOST_RESULTS_FOLDER}:/results

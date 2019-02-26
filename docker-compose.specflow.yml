@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  composedemodb:
+    image: mongo
+
+  backend:
+    image: ${DOCKER_REGISTRY-}backend:latest
+
+  specflow:
+    image: backend-specs
+    build:
+      context: .
+      dockerfile: Backend.Specs/Dockerfile
+    environment:
+    - baseUrl=http://backend/api/people
+    depends_on:
+    - backend
+
+# to start:
+# docker-compose -f .\docker-compose.specflow.yml `
+#    up `
+#    --abort-on-container-exit `
+#    --build `
+
+# to terminate:
+# docker-compose down -v

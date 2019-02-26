@@ -1,0 +1,172 @@
+{
+    "options": [
+        {
+            "enabled": false,
+            "definition": {
+                "id": "5d58cc01-7c75-450c-be18-a388ddb129ec"
+            },
+            "inputs": {
+                "branchFilters": "[\"+refs/heads/*\"]",
+                "additionalFields": "{}"
+            }
+        },
+        {
+            "enabled": false,
+            "definition": {
+                "id": "a9db38f9-9fdc-478c-b0f9-464221e58316"
+            },
+            "inputs": {
+                "workItemType": "Bug",
+                "assignToRequestor": "true",
+                "additionalFields": "{}"
+            }
+        }
+    ],
+    "variables": {
+        "system.debug": {
+            "value": "false",
+            "allowOverride": true
+        }
+    },
+    "retentionRules": [
+        {
+            "branches": [
+                "+refs/heads/*"
+            ],
+            "artifacts": [],
+            "artifactTypesToDelete": [
+                "FilePath",
+                "SymbolStore"
+            ],
+            "daysToKeep": 10,
+            "minimumToKeep": 1,
+            "deleteBuildRecord": true,
+            "deleteTestResults": true
+        }
+    ],
+    "properties": {},
+    "tags": [],
+    "jobAuthorizationScope": 1,
+    "jobTimeoutInMinutes": 60,
+    "jobCancelTimeoutInMinutes": 5,
+    "process": {
+        "phases": [
+            {
+                "steps": [
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": false,
+                        "alwaysRun": false,
+                        "displayName": "Copy aks definitions",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "5bfb729a-a7c8-4a78-a7c3-8d717bb7c13c",
+                            "versionSpec": "2.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "SourceFolder": "aks",
+                            "Contents": "**",
+                            "TargetFolder": "$(Build.ArtifactStagingDirectory)\\aks",
+                            "CleanTargetFolder": "true",
+                            "OverWrite": "true",
+                            "flattenFolders": "false"
+                        }
+                    },
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": false,
+                        "alwaysRun": false,
+                        "displayName": "Copy Provisioning scripts",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "5bfb729a-a7c8-4a78-a7c3-8d717bb7c13c",
+                            "versionSpec": "2.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "SourceFolder": "Deploy\\AksDemoResources",
+                            "Contents": "**",
+                            "TargetFolder": "$(Build.ArtifactStagingDirectory)\\deploy",
+                            "CleanTargetFolder": "true",
+                            "OverWrite": "true",
+                            "flattenFolders": "false"
+                        }
+                    },
+                    {
+                        "environment": {},
+                        "enabled": true,
+                        "continueOnError": false,
+                        "alwaysRun": false,
+                        "displayName": "Publish Artifact: drop",
+                        "timeoutInMinutes": 0,
+                        "condition": "succeeded()",
+                        "task": {
+                            "id": "2ff763a7-ce83-4e1f-bc89-0ae63477cebe",
+                            "versionSpec": "1.*",
+                            "definitionType": "task"
+                        },
+                        "inputs": {
+                            "PathtoPublish": "$(Build.ArtifactStagingDirectory)",
+                            "ArtifactName": "drop",
+                            "ArtifactType": "Container",
+                            "TargetPath": "",
+                            "Parallel": "false",
+                            "ParallelCount": "8"
+                        }
+                    }
+                ],
+                "name": "Agent job 1",
+                "refName": "Phase_1",
+                "condition": "succeeded()",
+                "target": {
+                    "executionOptions": {
+                        "type": 0
+                    },
+                    "allowScriptsAuthAccessOption": false,
+                    "type": 1
+                },
+                "jobAuthorizationScope": 1,
+                "jobCancelTimeoutInMinutes": 1
+            }
+        ],
+        "type": 1
+    },
+    "processParameters": {},
+    "quality": 1,
+    "authoredBy": {
+        "displayName": "Marco De Sanctis",
+        "url": "https://spsprodeus24.vssps.visualstudio.com/A4e8d6bfc-d48a-4a13-be59-d82a6f71b127/_apis/Identities/20e3e1f8-da74-4df2-b217-1e703a8943cf",
+        "_links": {
+            "avatar": {
+                "href": "https://des.visualstudio.com/_apis/GraphProfile/MemberAvatars/msa.NTcxZDM3MzUtMTcxYi03YTI5LTlkMTEtODJjYzk5NjIzZDlm"
+            }
+        },
+        "id": "20e3e1f8-da74-4df2-b217-1e703a8943cf",
+        "uniqueName": "",
+        "imageUrl": "https://des.visualstudio.com/_api/_common/identityImage?id=20e3e1f8-da74-4df2-b217-1e703a8943cf"
+    },
+    "drafts": [],
+    "id": 44,
+    "name": "Provisioning-Final",
+    "url": "https://des.visualstudio.com/72f71474-a237-4230-aa9a-d577d8262b8a/_apis/build/Definitions/44?revision=3",
+    "uri": "vstfs:///Build/Definition/44",
+    "path": "\\Final",
+    "type": 2,
+    "queueStatus": 0,
+    "revision": 3,
+    "createdDate": "2019-02-20T21:40:08.650Z",
+    "project": {
+        "id": "72f71474-a237-4230-aa9a-d577d8262b8a",
+        "name": "AksDevops",
+        "url": "https://des.visualstudio.com/_apis/projects/72f71474-a237-4230-aa9a-d577d8262b8a",
+        "state": 1,
+        "revision": 377995664,
+        "visibility": 0,
+        "lastUpdateTime": "2019-02-09T18:40:23.067Z"
+    }
+}

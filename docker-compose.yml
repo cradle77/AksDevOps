@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  composedemodb:
+    image: mongo
+
+  composedemoredis:
+    image: redis
+
+  backend:
+    image: ${DOCKER_REGISTRY-}backend
+    build:
+      context: .
+      dockerfile: Backend/Dockerfile
+
+  frontend:
+    image: ${DOCKER_REGISTRY-}frontend
+    build:
+      context: .
+      dockerfile: Frontend/Dockerfile
+    ports:
+    - 8080:80

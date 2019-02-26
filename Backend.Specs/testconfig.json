@@ -1,0 +1,10 @@
+﻿{
+  "bindingCulture": {
+    "language": "en-us"
+  },
+  "language": {
+    "feature": "en-us"
+  },
+  "plugins": [],
+  "baseUrl": "http://localhost:32778/api/people"
+}

@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  
+  specflow:
+    command: -l trx -r /results
+    volumes:
+    - ${HOST_RESULTS_FOLDER}:/results
+
+# to start:
+# docker-compose -f .\docker-compose.specflow.yml `
+#    up `
+#    --abort-on-container-exit `
+#    --build `
+
+# to terminate:
+# docker-copmose down -v
